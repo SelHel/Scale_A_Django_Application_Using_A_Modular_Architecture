@@ -1,5 +1,7 @@
 import os
 import sentry_sdk
+
+from django.core.management.utils import get_random_secret_key
 from sentry_sdk.integrations.django import DjangoIntegration
 from dotenv import load_dotenv
 
@@ -13,12 +15,25 @@ load_dotenv()  # take environment variables from .env
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = str(os.getenv('SECRET_KEY'))
+SECRET_KEY = str(os.getenv('SECRET_KEY', default=get_random_secret_key()))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.getenv('DEBUG'))
+if os.getenv('DEBUG', default='') == 'False':
+    DEBUG = False
+else:
+    DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+if os.getenv("HEROKU_APP_NAME", default=None) is not None:
+    heroku_app_name = os.getenv("HEROKU_APP_NAME")
+    ALLOWED_HOSTS = [f"{heroku_app_name}.herokuapp.com"]
+    CSRF_TRUSTED_ORIGINS = [
+        f"http://{heroku_app_name}.herokuapp.com",
+        f"https://{heroku_app_name}.herokuapp.com"
+    ]
+
+else:
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='localhost').split(',')
+    CSRF_TRUSTED_ORIGINS = [os.getenv('CSRF_TRUSTED_ORIGINS', default='https://localhost')]
 
 
 # Application definition
@@ -35,8 +50,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,6 +91,8 @@ DATABASES = {
     }
 }
 
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -112,22 +129,27 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+
 # Sentry Django integration
-sentry_sdk.init(
-    dsn=str(os.getenv('SENTRY_DSN')),
-    integrations=[DjangoIntegration()],
+dsn = os.getenv("SENTRY_DSN", default=None)
+if dsn is not None:
+    sentry_sdk.init(
+        dsn=str(os.getenv(
+            'SENTRY_DSN',
+            default=dsn
+            )),
+        integrations=[DjangoIntegration()],
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0,
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
 
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )

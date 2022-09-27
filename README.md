@@ -1,5 +1,5 @@
 # Mettre à l'échelle une application Django en utilisant une architecture modulaire
-##Résumé
+## Résumé
 
 Amélioration du Site web d'Orange County Lettings :<br>
 
@@ -122,19 +122,19 @@ Si la conteneurisation et l'envoi de l'image sont réussis, il exécute le dépl
 
 ### Guide de déploiement
 
-####Étape 1:DockerHub
+#### Étape 1:DockerHub
 - Se connecter à DockerHub et créer un nouveau repository (Pensez à modifier le nom du repository DockerHub dans le fichier de configuration .circleci/config.yml)
 
 - Ensuite vous devez générer un Access token. ([Voir documentation](https://docs.docker.com/docker-hub/access-tokens/))<br>
 (Vous devrez le renseigner dans les variables d'environnement de votre projet CircleCI)
 
-####Étape 2:Heroku
+#### Étape 2:Heroku
 - Se connecter à Heroku et créer une nouvelle application (Pensez à modifier le nom de l'application Heroku dans le fichier de configuration .circleci/config.yml)
 
 - Ensuite vous devez générer un API token en utilisant Heroku CLI. ([Voir documentation](https://devcenter.heroku.com/articles/authentication))<br>
 (Vous devrez le renseigner dans les variables d'environnement de votre projet CircleCI)
 
-####Étape 3:CircleCI
+#### Étape 3:CircleCI
 
 - Se connecter à CircleCI, créer un nouveau projet lié à votre repository GitHub.
 

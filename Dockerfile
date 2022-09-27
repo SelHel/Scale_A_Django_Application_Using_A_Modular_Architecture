@@ -10,7 +10,6 @@ FROM python:3.9
 WORKDIR /app
 
 # Set environment variables
-ENV DEBUG=False
 ENV PORT=8000
 
 # Copy the dependencies file to the working directory.
@@ -21,6 +20,9 @@ RUN pip install -r requirements.txt
 
 # Copy our source code into the working directory.
 COPY . /app
+
+# collect static files
+RUN python manage.py collectstatic --noinput
 
 # Indicates which port the container will be executed on.
 EXPOSE 8000

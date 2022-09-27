@@ -1,16 +1,16 @@
-# This indicates the version of the CircleCI platform used
+# This indicates the version of the CircleCI platform used.
 version: 2.1
 
-# Define the jobs we want to run for this project
-jobs:
-  build-and-test: # This is the name of the job, the first job Build the docker image, run tests and linting
+# Define the jobs we want to run for this project.
+jobs: # Jobs are the building blocks of your config. Jobs are collections of steps, which run commands/scripts as required.
+  build-and-test: # This is the name of the job, the first job Build the docker image, run tests and linting.
     # This indicates that we are using a Docker image for the container in which our task's commands are executed.
     docker: 
-      - image: cimg/python:3.9.4 # This is the Docker image name
+      - image: cimg/python:3.9.4 # This is the Docker image name.
 
     # The steps collection is a list of run directives.
     steps: 
-      - checkout #
+      - checkout # A special step used to check out source code to the configured path (defaults to the working_directory).
       - run:
           name: Install dependencies and environment
           command: |
@@ -19,13 +19,11 @@ jobs:
             pip install -r requirements.txt
       - run:
           name: Run linting
-          # This command run flake8
           command: |
             . venv/bin/activate
             flake8
       - run:
           name: Test with pytest
-          # This command run pytest
           command: |
             . venv/bin/activate
             pytest
@@ -43,8 +41,7 @@ jobs:
       - run:
           name: Push Docker Image
           # 1. Login to DockerHub
-          # 2. Set
-          # 4. Releasing the new version of our app
+          # 
           command: |
             echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USER --password-stdin
             docker tag $DOCKERHUB_USER/python-oc-lettings:$CIRCLE_SHA1 $DOCKERHUB_USER/python-oc-lettings:lastest
@@ -65,16 +62,16 @@ jobs:
           # 5. Releasing the new version of our app
           command: |
             sudo curl https://cli-assets.heroku.com/install.sh | sh
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set SECRET_KEY=$SECRET_KEY -a oc-lettings-17
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set SENTRY_DSN=$SENTRY_DSN -a oc-lettings-17
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set DEBUG=False -a oc-lettings-17
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set ALLOWED_HOSTS=$ALLOWED_HOSTS -a oc-lettings-17
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set HEROKU_APP_NAME=$HEROKU_APP_NAME -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set DEBUG=$DEBUG -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a oc-lettings-17 web
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a oc-lettings-17 web
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
 
-# Orchestrate our job run sequence
-workflows:
+
+workflows: # A workflow is a set of rules for defining a collection of jobs and their run order.
   main: # This is the name of the workflow
     jobs:
       - build-and-test

@@ -191,12 +191,12 @@ Cliquer sur le titre de l'erreur, une page s'ouvrira, vous pourrez voir des info
 
 - Si vous ne disposez pas de l'image en local, Docker ira la télécharger sur le registre.
 
-- Le site lancé localement sera disponible à l'adresse : [http://localhost:8000](http://localhost:8000)
+- Le site lancé localement sera disponible à l'adresse : <http://localhost:8000>
 
 
 ## Lien vers l'application deployée sur Heroku
 
-- [https://oc-lettings-17.herokuapp.com](https://oc-lettings-17.herokuapp.com)
+- <https://oc-lettings-17.herokuapp.com>
 
 ## Auteur
 **Selim Helaoui**

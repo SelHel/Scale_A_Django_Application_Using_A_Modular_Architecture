@@ -45,9 +45,9 @@ jobs: # Jobs are the building blocks of your config. Jobs are collections of ste
           # 3. Push the Docker image to the registry
           command: |
             echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USER --password-stdin
-            docker tag $DOCKERHUB_USER/python-oc-lettings:$CIRCLE_SHA1 $DOCKERHUB_USER/python-oc-lettings:lastest
+            docker tag $DOCKERHUB_USER/python-oc-lettings:$CIRCLE_SHA1 $DOCKERHUB_USER/python-oc-lettings:latest
             docker push $DOCKERHUB_USER/python-oc-lettings:$CIRCLE_SHA1
-            docker push $DOCKERHUB_USER/python-oc-lettings:lastest
+            docker push $DOCKERHUB_USER/python-oc-lettings:latest
 
   deploy-to-heroku: # This is the name of the job, the third job deploy the application to Heroku
     machine: true

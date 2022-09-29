@@ -18,7 +18,7 @@ load_dotenv()  # take environment variables from .env
 SECRET_KEY = str(os.getenv('SECRET_KEY', default=get_random_secret_key()))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv('DEBUG', default='') == 'False':
+if os.getenv('DEBUG', default='False') == 'False':
     DEBUG = False
 else:
     DEBUG = True
@@ -32,8 +32,11 @@ if os.getenv("HEROKU_APP_NAME", default=None) is not None:
     ]
 
 else:
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='localhost').split(',')
-    CSRF_TRUSTED_ORIGINS = [os.getenv('CSRF_TRUSTED_ORIGINS', default='https://localhost')]
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='localhost,0.0.0.0').split(',')
+    CSRF_TRUSTED_ORIGINS = os.getenv(
+        'CSRF_TRUSTED_ORIGINS',
+        default='https://localhost,http://localhost,https://0.0.0.0,http://0.0.0.0'
+    ).split(',')
 
 
 # Application definition

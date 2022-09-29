@@ -44,9 +44,10 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 Créer un fichier nommé **.env** à la racine du projet puis stocker dans ce fichier les variables d'environnement ci-dessous :
 
 ```yaml
-SECRET_KEY=<your-secret-key>
+ALLOWED_HOSTS=127.0.0.1,0.0.0.0,localhost
+SECRET_KEY=<your-django-secret-key>
 DEBUG=True
-ALLOWED_HOSTS=localhost,0.0.0.0,127.0.0.1
+CSRF_TRUSTED_ORIGINS=https://localhost
 ```
 
 #### Exécuter le site
@@ -129,7 +130,7 @@ Si la conteneurisation et l'envoi de l'image sont réussis, il exécute le dépl
 (Vous devrez le renseigner dans les variables d'environnement de votre projet CircleCI)
 
 #### Étape 2:Heroku
-- Se connecter à Heroku et créer une nouvelle application (Pensez à modifier le nom de l'application Heroku dans le fichier de configuration .circleci/config.yml)
+- Se connecter à Heroku et créer une nouvelle application (Vous devrez renseigner le nom de l'application dans les variables d'environnement de votre projet CircleCI)
 
 - Ensuite vous devez générer un API token en utilisant Heroku CLI. ([Voir documentation](https://devcenter.heroku.com/articles/authentication))<br>
 (Vous devrez le renseigner dans les variables d'environnement de votre projet CircleCI)
@@ -144,10 +145,10 @@ Si la conteneurisation et l'envoi de l'image sont réussis, il exécute le dépl
 
 	| Name  | Value
 	| :--------------: |:---------------: |
-	| ALLOWED_HOSTS  |  [your-app-name].herokuapp.com   |
 	| DEBUG  | False  |
-	| DOCKERHUB_TOKEN  | YOUR DOCKERHUB TOKEN  |
+	| DOCKERHUB_TOKEN  | YOUR DOCKERHUB ACCESS TOKEN  |
 	| DOCKERHUB_USER  | YOUR DOCKERHUB USERNAME |
+	| HEROKU_APP _NAME | YOUR HEROKU APPLICATION NAME |
 	| HEROKU_TOKEN  | YOUR HEROKU API TOKEN  |
 	| SECRET_KEY  | YOUR DJANGO SECRET KEY  |
 
@@ -167,7 +168,7 @@ Si la conteneurisation et l'envoi de l'image sont réussis, il exécute le dépl
 
 - Récupérer le DSN en allant dans **Organization settings** > **Projects**, choisissez votre projet puis cliquez sur **Client Keys(DSN)**.
 
-- Copiez le DSN et ajoutez le aux variables d'environnement du fichier **.env** ainsi qu'aux variables d'environnement du projet sur CircleCI :
+- Copiez le DSN et ajoutez le aux variables d'environnement du projet sur CircleCI :
 	
 	| Clé  | Valeur
 	| :--------------: |:---------------: |
@@ -175,7 +176,7 @@ Si la conteneurisation et l'envoi de l'image sont réussis, il exécute le dépl
 	
 - Test d'une erreur `https://[your-app-name].herokuapp.com/sentry-debug/`
 
-- Pour afficher et résoudre l'erreur enregistrée, connectez-vous à [sentry.io](https://sentry.io/organizations/[your-sentry-id]/issues/) et ouvrez votre projet.<br>
+- Pour afficher et résoudre l'erreur enregistrée, connectez-vous à [sentry.io](https://sentry.io) et ouvrez votre projet.<br>
 Cliquer sur le titre de l'erreur, une page s'ouvrira, vous pourrez voir des informations détaillées et la marquer comme résolue.
 
 ## Extraire l'image de DockerHub et l'exécutez localement
@@ -187,7 +188,7 @@ Cliquer sur le titre de l'erreur, une page s'ouvrira, vous pourrez voir des info
 - Lancez l'application Docker Desktop
 
 - Dans un terminal ou dans l'invite de commandes exécutez la commande suivante :
-```docker run -p 8000:8000 selhel/python-oc-lettings:latest```
+```docker run --pull always -p 8000:8000 selhel/python-oc-lettings:latest```
 
 - Si vous ne disposez pas de l'image en local, Docker ira la télécharger sur le registre.
 
